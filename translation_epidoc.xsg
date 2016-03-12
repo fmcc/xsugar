@@ -96,6 +96,7 @@ item
     : [term t] = [term t]
     : [lb l] = [lb l]
     : [gap g] = [gap g]
+    : [vac v] = [vac v]
     : [note n] = [note n]
     : [choice c] = [choice c]
     : [supplied s] = [supplied s]
@@ -133,6 +134,9 @@ term
 gap
     : "[...]" = <gap reason="lost" extent="unknown" unit="character"></>
     : "..." = <gap reason="illegible" extent="unknown" unit="character"></>
+
+vac
+    : "vac." = <space extent="unknown" unit="character"></>
 
 del
     : "〚" [WORDSLOOSE w] "〛" = <del>[WORDSLOOSE w]</>
