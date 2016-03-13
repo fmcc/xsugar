@@ -3,6 +3,7 @@ xmlns:xml = "http://www.w3.org/XML/1998/namespace"
 NL = [\r\n]
 SP = [ ]
 SPO = [ ]+ (MAX)
+TWOSPORMORE = [ ]{2,}
 SPO2 = [ ]*
 ANYSP = [\r\n \t]*
 
@@ -19,6 +20,7 @@ ENDOPT = ":>"
 
 QUESTION = [\?]?
 
+NUM = [0-9]+
 LINENUM = [0-9]+[/\,a-zA-Z]*[ms0-9]*
 
 TERMLANG = ((la)|(grc\-Latn))
@@ -121,7 +123,8 @@ foreign
     : "~|" [WORDSFOREIGN a] "|~" [FOREIGNLANG lang] " " = <foreign xml:lang=[FOREIGNLANG lang]>[WORDSFOREIGN a]</>
 
 lb
-    : [NL] [NL] = [NL]<lb></>
+    : [NL] [TWOSPORMORE s] = [NL] [TWOSPORMORE s] <lb></>
+    >: [NL] [NL] = [NL]<lb></>
     >: [NL] [NL] = <lb></>
 
 term
@@ -136,7 +139,7 @@ gap
     : "..." = <gap reason="illegible" extent="unknown" unit="character"></>
 
 vac
-    : "vac." = <space extent="unknown" unit="character"></>
+    : "vac." [NUM n] = <space quantity=[NUM n] unit="character" precision="low"></>
 
 del
     : "〚" [WORDSLOOSE w] "〛" = <del>[WORDSLOOSE w]</>
