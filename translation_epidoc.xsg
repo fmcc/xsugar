@@ -152,6 +152,7 @@ supplied
 
 choice
     : [BEGOPT] [WORDSLOOSE w] "|" [segs b] [ENDOPT] = <choice><seg>[WORDSLOOSE w]</>[segs b]</>
+    >: [BEGOPT] [items i] "|" [segs b] [ENDOPT] = <choice><seg>[items i]</>[segs b]</>
 
 app
     : [BEGOPT] [items a] "|:" [WORDSLOOSE c] "|" [ENDOPT] = <app><lem resp=[WORDSLOOSE c]>[items a]</></>
