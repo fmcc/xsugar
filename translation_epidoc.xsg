@@ -99,6 +99,7 @@ item
     : [lb l] = [lb l]
     : [gap g] = [gap g]
     : [vac v] = [vac v]
+    : [meta n] = [meta n]
     : [note n] = [note n]
     : [choice c] = [choice c]
     : [supplied s] = [supplied s]
@@ -176,3 +177,9 @@ app
 note
     : "\/*" [WORD a] "|" [WORDSANDMORE more] "*\/" = <note type=[WORD a]>[WORDSANDMORE more]</>
     : "\/*" [WORDSANDMORE a] "*\/" = <note>[WORDSANDMORE a]</>
+
+meta
+    : "<+" "place=" [WORDSLOOSE url] "|" [WORD w] "+>" = <placeName ref=[WORDSLOOSE url]>[WORD w]</>
+    : "<+" "person=" [WORDSLOOSE url] "|" [WORD w] "+>" = <persName ref=[WORDSLOOSE url]>[WORD w]</>
+    >: "<+" "place=" [WORDSLOOSE url] "|" [items i] "+>" = <placeName ref=[WORDSLOOSE url]>[items i]</>
+    >: "<+" "person=" [WORDSLOOSE url] "|" [items i] "+>" = <persName ref=[WORDSLOOSE url]>[items i]</>
