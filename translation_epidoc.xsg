@@ -27,6 +27,7 @@ TERMLANG = ((la)|(grc\-Latn))
 FOREIGNLANG = ((la)|(grc\-Latn))
 NOTELANG = ((en)|(de))
 
+
 ANYLETTER = [^\^<>_#@~\[\]〚〛$\*\&\|\{\}\"¯≡+\u0323]
 
 // WORD breaks at space and does not allow DOT
@@ -174,10 +175,15 @@ app
     : [BEGOPT] [WORDSLOOSE a] "|BGU_DDbDP:" [WORDSLOOSE c] "|" [ENDOPT] = <app type="BGU_DDbDP"><lem resp=[WORDSLOOSE c]>[WORDSLOOSE a]</></>
     : [BEGOPT] [WORDSLOOSE a] "|BGU_DDbDP:|" [ENDOPT] = <app type="BGU_DDbDP"><lem>[WORDSLOOSE a]</></>
 
+pleiades_url
+    : [WORDSLOOSE url] = "http://pleiades.stoa.org/places/"[WORDSLOOSE url]
+
 meta
     : "<+" "place=" [WORDSLOOSE url] "|" [WORD w] "+>" = <placeName ref=[WORDSLOOSE url]>[WORD w]</>
+    : "<+" "pleiades=" [pleiades_url url] "|" [WORD w] "+>" = <placeName ref=[pleiades_url url]>[WORD w]</>
     : "<+" "person=" [WORDSLOOSE url] "|" [WORD w] "+>" = <persName ref=[WORDSLOOSE url]>[WORD w]</>
     >: "<+" "place=" [WORDSLOOSE url] "|" [items i] "+>" = <placeName ref=[WORDSLOOSE url]>[items i]</>
+    : "<+" "pleiades=" [pleiades_url url] "|" [items i] "+>" = <placeName ref=[pleiades_url url]>[items i]</>
     >: "<+" "person=" [WORDSLOOSE url] "|" [items i] "+>" = <persName ref=[WORDSLOOSE url]>[items i]</>
 
 note
