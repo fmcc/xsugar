@@ -178,13 +178,23 @@ app
 pleiades_url
     : [WORDSLOOSE url] = "http://pleiades.stoa.org/places/"[WORDSLOOSE url]
 
+lgpn_url
+    : [WORDSLOOSE url] = "http://www.lgpn.ox.ac.uk/id/"[WORDSLOOSE url]
+
 meta
     : "<+" "place=" [WORDSLOOSE url] "|" [WORD w] "+>" = <placeName ref=[WORDSLOOSE url]>[WORD w]</>
+    : "<+" "geog=" [WORDSLOOSE url] "|" [WORD w] "+>" = <geogName ref=[WORDSLOOSE url]>[WORD w]</>
     : "<+" "pleiades=" [pleiades_url url] "|" [WORD w] "+>" = <placeName ref=[pleiades_url url]>[WORD w]</>
+    : "<+" "geog_pleiades=" [pleiades_url url] "|" [WORD w] "+>" = <geogName ref=[pleiades_url url]>[WORD w]</>
     : "<+" "person=" [WORDSLOOSE url] "|" [WORD w] "+>" = <persName ref=[WORDSLOOSE url]>[WORD w]</>
+    : "<+" "lgpn=" [lgpn_url url] "|" [WORD w] "+>" = <persName ref=[lgpn_url url]>[WORD w]</>
+
     >: "<+" "place=" [WORDSLOOSE url] "|" [items i] "+>" = <placeName ref=[WORDSLOOSE url]>[items i]</>
-    : "<+" "pleiades=" [pleiades_url url] "|" [items i] "+>" = <placeName ref=[pleiades_url url]>[items i]</>
+    >: "<+" "geog=" [WORDSLOOSE url] "|" [items i] "+>" = <geogName ref=[WORDSLOOSE url]>[items i]</>
+    >: "<+" "pleiades=" [pleiades_url url] "|" [items i] "+>" = <placeName ref=[pleiades_url url]>[items i]</>
+    >: "<+" "geog_pleiades=" [pleiades_url url] "|" [items i] "+>" = <geogName ref=[pleiades_url url]>[items i]</>
     >: "<+" "person=" [WORDSLOOSE url] "|" [items i] "+>" = <persName ref=[WORDSLOOSE url]>[items i]</>
+    >: "<+" "lgpn=" [lgpn_url url] "|" [items i] "+>" = <persName ref=[lgpn_url url]>[items i]</>
 
 note
     : "\/*" [WORD a] "|" [WORDSANDMORE more] "*\/" = <note type=[WORD a]>[WORDSANDMORE more]</>
