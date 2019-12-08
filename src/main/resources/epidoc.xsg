@@ -1,0 +1,1051 @@
+xmlns:xml = "http://www.w3.org/XML/1998/namespace"
+
+NL = [\r\n]+
+SP = [ ]
+SPO = [ ]+ (MAX)
+SPO2 = [ ]*
+ANYSP = [\r\n \t]*
+
+BEGOPT = "<:"
+ENDOPT = ":>"
+BEGNUM = "<#"
+ENDNUM = "#>"
+BEGEXP = "("
+ENDEXP = ")"
+BEGAB = "<="
+ENDAB = "=>"
+BEGDIV = "<D="
+ENDDIV = "=D>"
+BEGDE = "<S="
+BEGABBR = "(|"
+ENDABBR = "|)"
+
+//fracsym is 3 characters - character reference &#x10175; &#x10177; &#x10178; or javacode escape \ud800\udd75 \ud800\udd77 \ud800\udd78
+FRACSYM = [𐅵𐅷𐅸]+
+
+UNDERDOT = "\u0323"
+COMBINMACRON = "\u0304"
+COMBINDIACRIT = ((\u0342)|(\u0345))
+
+//ca. with 0 or more spaces followed by ? mark
+CAUNKNOWN = "ca."[ ]*"\?"
+LEADCA = "ca."[ ]*
+
+// diacriticals in the WORDS4EXND regular expression below and with hi rend grammar, as of 7/27/2010,	are ῾´¨`\^᾿ 
+// ῾ u+1ffe = spiritus_asper, ´ u+00b4 = acute, ¨ U+00a8 = diaeresis, ` u+0060 = grave, ^ u+005e = circumflex, ᾿ U+1fbf = spiritus_lenis
+
+// WORD breaks at space and does not allow DOT
+WORD = ([^ \/\\\n\r\t\[\]\^<>_#@~〚〛$\*\&\,\.\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+// WORDDIV breaks at space and does not allow DOT - allows +, \,
+WORDDIV = ([^ \n\r\t\[\]\^<>_#@~〚〛$\*\&\.\:\=\|\'\!\(\)\{\}\?\"¯\u0304\u0323]+) (MAX)
+
+// WORDVEST same as WORD except added 'v' to keep vestig out
+WORDVEST = ([^ \/\\\n\r\t\[\]\^<>v_#@~〚〛$\*\&\,\.\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDS allows space (therefore multiple words) and DOT
+WORDS = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛$\*\&\,\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDSNONUM same as WORDS except added numbers 0-9 to keep them out
+WORDSNONUM = ([^\/\\\n\r\t\[\]\^<>0-9_#@~〚〛$\*\&\,\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDSF allows space (therefore multiple words) and DOT - allow ?, \, , $, +, : for foreign language
+// added &([^\-\-\-\-]+) at the end to not allow horizontal-rule and paragraphos on 2011-11-03
+WORDSF = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛\*\&\=\|\'\!\(\)\{\}\"¯\u0304\u0323v]+)&([^\-\-\-\-]+) (MAX)
+
+//WORDSN same as WORDSF except for 'v' not in list
+WORDSN = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛\*\&\=\|\'\!\(\)\{\}\"¯\u0304\u0323]+) (MAX)
+
+//WORDSED allows left and right paren and '+' sign - used to make app lem editorial work when lem resp= includes parens (ex. (BL 1.24))
+//allowed comma on 11/09 because of p.hombert.1.32.xml parse error - change all editorial lem resp= from WORDS to WORDSED
+WORDSED = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛$\*\&\:\=\|\'\!\{\}\?\"¯\u0304\u0323]+) (MAX)
+
+//ED_CITATION - new format of app type="editorial"
+ED_CITATION = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛$\*\&\:\=\|\'\!\{\}\?\"¯\u0304\u0323]+) (MAX)
+
+//WORDSBL allows comma - used to make app lem BL work when lem resp= includes comma (ex. lem resp='cf. 5.11, 3.10')
+WORDSBL = ([^\/\\\n\r\t\[\]\^<>_#@~〚〛$\*\&\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDSSIC allows space (therefore multiple words) and does not allow DOT to break correctly for .gap - added vestig 7/7 for supralinear
+// same as WORDVEST except for allowing space therefore mulitple words
+WORDSSIC = ([^\/\\\n\r\t\[\]\^<>v_#@~〚〛$\*\&\,\.\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDS4EX created 11/23 from WORDSSIC to use in expan <ex> tags to allow fraction numbers to appear within tag - removed / in not allowed
+WORDS4EX = ([^\\\[\]\^<>_#@~〚〛$\*\&\,\.\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+//WORDS4EXND created 11/23 from WORDSSIC to use in expan <ex> tags to allow fraction numbers to appear within tag - removed / in not allowed
+//ND = no diacriticals allowed
+WORDS4EXND = ([^\\\[\]\^<>_#@~῾´¨`\^᾿〚〛$\*\&\,\.\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+) (MAX)
+
+NUM = [0-9]+
+LINENUM = [0-9]+[/\,a-zA-Z0-9]*[ms0-9]*
+
+ANYLETTER = [^\/\\\t\[\]\^<>_#@~〚〛$\*\&\=\|\!\(\)\{\}\?\"¯+\u0304\u0323]
+
+//ANYLETTER plus u0342 and u0345 - combining circumflex and iota-subscript
+ANYNCLETTER = [^\/\\\t\[\]\^<>_#@~〚〛$\*\&\:\=\|\!\(\)\{\}\?\"¯+\u0304\u0323\u0342\u0345]
+
+//ANYLETTER plus 0-9 to eliminate numbers 7/22 to fix reversability on some sup lost 
+//added l on 3/30 to make space line (ex.  vac?lin) work
+ANYMULT = [^\/\\\t\[\]\^<>0-9l_#@~〚〛$\*\&\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]+
+
+//the third part of HANDSHIFT reg exp is same as ANYLETTER except does not allow space
+HANDSHIFT = m{1}[0-9]+[^ \/\\\t\[\]\^<>_#@~〚〛$\*\&\:\=\|\'\!\(\)\{\}\?\"¯+\u0304\u0323]?
+
+DOT = "."
+QUESTION = [\?]?
+
+// fracnum is for recognizing a fraction or wholenumber
+FRACNUM = ([0-9]+\/{1}[0-9]+|[0-9]+)
+
+// appnum is for recognizing app_lem number
+APPNUM = [0-9]+\.{1}[0-9]+
+
+LANGLIST = ((Arabic)|(Aramaic)|(Coptic)|(Demotic)|(Gothic)|(Hebrew)|(Hieratic)|(Nabatean)|(Syriac))
+TEXTLANGLIST = ((grc)|(la)|(la\-Grek)|(grc\-Latn)|(cop))
+
+ADDLIST = ((bottom)|(left)|(right)|(top)|(margin))
+
+
+
+// actual grammar starts below at file.  regular expressions used are above
+
+
+
+// file starts at 'div edition' and allows for ab to be inside a div textpart or not - occurs both ways - allows empty div also
+file 
+  : [BEGDE] "." [TEXTLANGLIST lg] [ANYSP a][divtag d][ANYSP aa]  = <div xml:lang=[TEXTLANGLIST lg] type="edition" xml:space="preserve">[ANYSP a][divtag d][ANYSP aa]</>
+  : [BEGDE] "." [TEXTLANGLIST lg] [ANYSP a][abtag ab][ANYSP aa]  = <div xml:lang=[TEXTLANGLIST lg] type="edition" xml:space="preserve">[ANYSP a][abtag ab][ANYSP aa]</>
+  : =
+     
+// cannot have a standalone ab section after a div - must be wrapped in a div - but can have a div after a standalone ab
+// this is why divtag section only does 'divtag more' and the the abtag section does 'abtag more' and 'divtag more' 
+// ANYSP covers space(s), new line(s), and tab(s)
+divtag 
+  : [BEGDIV] "." [WORDDIV n] [ANYSP a] [abtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] = <div n=[WORDDIV n] type="textpart"> [ANYSP a] [abtag ab][ANYSP aa]</> [ANYSP aaa]
+  >: [BEGDIV] "." [WORDDIV n] [ANYSP a] [abtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] [divtag more] = <div n=[WORDDIV n] type="textpart"> [ANYSP a] [abtag ab][ANYSP aa]</> [ANYSP aaa] [divtag more]
+  >: [BEGDIV] "." [WORDDIV n] "." [WORDDIV s] [ANYSP a] [abtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] = <div n=[WORDDIV n] subtype =[WORDDIV s] type="textpart"> [ANYSP a] [abtag ab][ANYSP aa]</> [ANYSP aaa]
+  >: [BEGDIV] "." [WORDDIV n] "." [WORDDIV s] [ANYSP a] [abtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] [divtag more] = <div n=[WORDDIV n] subtype =[WORDDIV s] type="textpart"> [ANYSP a] [abtag ab][ANYSP aa]</> [ANYSP aaa] [divtag more]
+  >: [BEGDIV] "." [WORDDIV n] [ANYSP a] [divtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] = <div n=[WORDDIV n] type="textpart"> [ANYSP a] [divtag ab][ANYSP aa]</> [ANYSP aaa]
+  >: [BEGDIV] "." [WORDDIV n] [ANYSP a] [divtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] [divtag more] = <div n=[WORDDIV n] type="textpart"> [ANYSP a] [divtag ab][ANYSP aa]</> [ANYSP aaa] [divtag more]
+  >: [BEGDIV] "." [WORDDIV n] "." [WORDDIV s] [ANYSP a] [divtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] = <div n=[WORDDIV n] subtype =[WORDDIV s] type="textpart"> [ANYSP a] [divtag ab][ANYSP aa]</> [ANYSP aaa]
+  >: [BEGDIV] "." [WORDDIV n] "." [WORDDIV s] [ANYSP a] [divtag ab] [ANYSP aa][ENDDIV] [ANYSP aaa] [divtag more] = <div n=[WORDDIV n] subtype =[WORDDIV s] type="textpart"> [ANYSP a] [divtag ab][ANYSP aa]</> [ANYSP aaa] [divtag more]
+
+abtag 
+  : [BEGAB] [items z] [ENDAB] [ANYSP a] = <ab>[items z]</> [ANYSP a]
+  >: [BEGAB] [items z] [ENDAB] [ANYSP a] [abtag more] = <ab>[items z]</> [ANYSP a] [abtag more]
+  >: [BEGAB] [items z] [ENDAB] [ANYSP a] [divtag more] = <ab>[items z]</> [ANYSP a] [divtag more]
+  >: [BEGAB] [ENDAB] = <ab></>
+
+items 
+  : [item i] [items more] = [item i] [items more]  
+  >: [item p] = [item p]	
+
+linenumber 
+  : [LINENUM n] ". " = <lb n=[LINENUM n]/>
+  >: [LINENUM n] ".- " = <lb n=[LINENUM n] break="no"/>
+
+newline 
+  : [NL n] = [NL n]
+
+// called by unclear_characters
+unclears_non_terminal 
+  : [ANYNCLETTER a] [COMBINDIACRIT c] [UNDERDOT] [unclears_non_terminal mcu] = [ANYNCLETTER a] [COMBINDIACRIT c] [unclears_non_terminal mcu]
+  : [ANYNCLETTER a] [COMBINDIACRIT b] [UNDERDOT] = [ANYNCLETTER a] [COMBINDIACRIT b]
+  >: [ANYLETTER a] [UNDERDOT] [unclears_non_terminal mu] = [ANYLETTER a] [unclears_non_terminal mu]
+  : [ANYLETTER a] [UNDERDOT] = [ANYLETTER a]
+
+// called by fraction
+morenum 
+  : [BEGNUM] [WORD w] "=" [NUM x] [ENDNUM] [morenum y] = <num value=[NUM x]>[WORD w]</>  [morenum y]
+  >: [BEGNUM] [WORD w] "=" [NUM x] [ENDNUM] = <num value=[NUM x]>[WORD w]</>
+
+// called by choice_reg
+multregs
+  : [items a] "(?)" "|" [multregs more] = <reg cert="low">[items a]</>[multregs more]
+  >: [items a] "(?)" "||reg||" = <reg cert="low">[items a]</>
+  : [items a] "|" [multregs more] = <reg>[items a]</>[multregs more]
+  >: [items a] "||reg||" = <reg>[items a]</>
+  : [items a] "(?)" "=" [WORD b] "|" [multregs more] = <reg xml:lang=[WORD b] cert="low">[items a]</>[multregs more]
+  >: [items a] "(?)" "=" [WORD b] "||reg||" = <reg xml:lang=[WORD b] cert="low">[items a]</>
+  : [items a] "=" [WORD b] "|" [multregs more] = <reg xml:lang=[WORD b]>[items a]</>[multregs more]
+  >: [items a] "=" [WORD b] "||reg||" = <reg xml:lang=[WORD b]>[items a]</>
+  
+// called by bef_aft_ex, supexpan, sup_special, and expan
+expanstuff
+  : [bef_aft_ex b] "(" [WORDS4EXND a] ")" [bef_aft_ex c] = [bef_aft_ex b]<ex>[WORDS4EXND a]</>[bef_aft_ex c]
+  : [bef_aft_ex b] "(" [WORDS4EXND f] "?" ")" [bef_aft_ex c] = [bef_aft_ex b] <ex cert="low">[WORDS4EXND f]</>[bef_aft_ex c]
+  : [bef_aft_ex b] "(" [WORDS4EXND a] ")" [bef_aft_ex c] [expanstuff more] = [bef_aft_ex b] <ex>[WORDS4EXND a]</> [bef_aft_ex c][expanstuff more]
+  : [bef_aft_ex b] "(" [WORDS4EXND f] "?" ")" [bef_aft_ex c] [expanstuff more] = [bef_aft_ex b] <ex cert="low">[WORDS4EXND f]</> [bef_aft_ex c][expanstuff more]
+  >: [bef_aft_ex b]"[" [inside_brackets i] "]"[bef_aft_ex c][expanstuff more] =  [bef_aft_ex b][inside_brackets i][bef_aft_ex c][expanstuff more]
+  >: [bef_aft_ex b]"[" [supexpan d] "]" [bef_aft_ex c][expanstuff more] = [bef_aft_ex b]<supplied reason="lost">[supexpan d]</>[bef_aft_ex c][expanstuff more]
+  >: [bef_aft_ex b]"[" [supexpan d] "]"[bef_aft_ex c] = [bef_aft_ex b]<supplied reason="lost">[supexpan d]</>[bef_aft_ex c]
+  >: [bef_aft_ex b]"[" [sup_special e] "(?)" "]"[bef_aft_ex c] [expanstuff more] = [bef_aft_ex b]<supplied reason="lost" cert="low">[sup_special e]</>[bef_aft_ex c][expanstuff more]
+  >: [bef_aft_ex b]"[" [sup_special e] "(?)" "]"[bef_aft_ex c] = [bef_aft_ex b]<supplied reason="lost" cert="low">[sup_special e]</>[bef_aft_ex c]
+  >: [bef_aft_ex b]"|_" [sup_special e] "_|"[bef_aft_ex c] [expanstuff more] = [bef_aft_ex b]<supplied evidence="parallel" reason="undefined">[sup_special e]</>[bef_aft_ex c][expanstuff more]
+  >: [bef_aft_ex b]"|_" [sup_special e] "_|"[bef_aft_ex c] = [bef_aft_ex b]<supplied evidence="parallel" reason="undefined">[sup_special e]</>[bef_aft_ex c]
+  >: [WORDVEST b][expanstuff more] = [WORDVEST b][expanstuff more]
+
+// called by expanstuff
+bef_aft_ex
+  >: [item c][bef_aft_ex more] = [item c][bef_aft_ex more]
+  >: [item c][expanstuff more] = [item c][expanstuff more]
+  >: [item c] = [item c]
+  : =
+
+// called by expanstuff and expan
+supexpan
+  : "(" [WORDS4EXND a] ")" = <ex>[WORDS4EXND a]</>
+  : "(" [WORDS4EXND f] "?" ")" = <ex cert="low">[WORDS4EXND f]</>
+  >: [WORDVEST b][supexpan more] = [WORDVEST b][supexpan more]
+  >: [ANYLETTER b][expanstuff more] = [ANYLETTER b][expanstuff more]
+  >: [WORDVEST b][expanstuff more] = [WORDVEST b][expanstuff more]
+  >: [item b][expanstuff more] = [item b][expanstuff more]
+  >: "(" [WORDS4EXND a] ")"[supexpan more] = <ex>[WORDS4EXND a]</>[supexpan more]
+  >: "(" [WORDS4EXND f] "?" ")"[supexpan more] = <ex cert="low">[WORDS4EXND f]</>[supexpan more]
+  >: "(" [WORDS4EXND a] ")"[expanstuff more] = <ex>[WORDS4EXND a]</>[expanstuff more]
+  >: "(" [WORDS4EXND f] "?" ")"[expanstuff more] = <ex cert="low">[WORDS4EXND f]</>[expanstuff more]
+  : =
+  
+// called by expanstuff and expan
+//sup_special used for inside both supplied/lost/certlow and supplied/parallel/undefined
+sup_special
+  : "(" [WORDS4EXND a] ")" = <ex>[WORDS4EXND a]</>
+  >: [WORDVEST b][sup_special more] = [WORDVEST b][sup_special more]
+  >: "(" [WORDS4EXND a] ")"[sup_special more] = <ex>[WORDS4EXND a]</>[sup_special more]
+  >: "(" [WORDS4EXND a] ")"[expanstuff more] = <ex>[WORDS4EXND a]</>[expanstuff more]
+  
+// called by uncertain_diacritical_diaeresis, _grave, _spiritus_asper, _acute, _circumflex, _spiritus_lenis
+nestanc 
+  : " ῾" = "asper"
+  : "´" = "acute"
+  : "¨" = "diaeresis"
+  : "`" = "grave"
+  : "^" = "circumflex"
+  : " ᾿" = "lenis"
+
+// called by items
+//item has productions that can nest inside self and those that cannot
+item
+  : [item_can_nest icn] = [item_can_nest icn]
+  >: [supraline_non_combine_macron sncm] = [supraline_non_combine_macron sncm]
+  : [quotation_marks qm] = [quotation_marks qm]
+  
+// called by hi_supra_not_nest_items
+hi_supra_item
+  : [item_can_nest icn] = [item_can_nest icn]
+  : [quotation_marks qm] = [quotation_marks qm]
+  
+// called by quote_not_nest_items
+quote_item
+  : [item_can_nest icn] = [item_can_nest icn]
+  >: [supraline_non_combine_macron sncm] = [supraline_non_combine_macron sncm]
+  
+// called by supraline_non_combine_macron
+//special items to keep hi_supraline from nesting inside itself 
+hi_supra_not_nest_items 
+  : [hi_supra_item i] [hi_supra_not_nest_items more] = [hi_supra_item i] [hi_supra_not_nest_items more]  
+  >: [hi_supra_item i] = [hi_supra_item i]
+  
+// called by  quotation_marks
+//special items to keep quote from nesting inside itself 
+quote_not_nest_items 
+  : [quote_item i] [quote_not_nest_items more] = [quote_item i] [quote_not_nest_items more]  
+  >: [quote_item i] = [quote_item i]
+  
+//item_can_nest are all the productions that can be nested inside itself
+item_can_nest
+	: [linenumber l] = [linenumber l]
+	: [newline n] = [newline n]
+	: [special_lines sl] = [special_lines sl]
+	: [abbreviation_unknown_resolution abur] = [abbreviation_unknown_resolution abur]
+	: [uncertain_diacritical ud] = [uncertain_diacritical ud]
+	: [supraline_combine_macron scm] = [supraline_combine_macron scm]
+	: [unclear_characters uc] = [unclear_characters uc]
+	: [choice_corr cc] = [choice_corr cc]
+	: [choice_reg cr] = [choice_reg cr]
+	: [milestone m] = [milestone m]
+	: [illegible_dot id] = [illegible_dot id]
+	: [lang_gap lg] = [lang_gap lg]
+	: [lines_not_transcribed lnt] = [lines_not_transcribed lnt]
+	: [hi_subscript hs] = [hi_subscript hs]
+	: [hi_tall ht] = [hi_tall ht]
+	: [hi_superscript hs] = [hi_superscript hs]
+	: [add_place ap] = [add_place ap]
+	: [hi_supraline_underline hsu] = [hi_supraline_underline hsu]
+	: [undefined_parallel up] = [undefined_parallel up]
+	: [lost_parallel lp] = [lost_parallel lp]
+	>: [fraction f] = [fraction f]
+	: [subst s] = [subst s]
+	: [app_ed e] = [app_ed e]
+	>: [app_ed_mult e] = [app_ed_mult e]
+	>: [app_lem al] = [app_lem al]
+//	>: [app_lem_mult alm] = [app_lem_mult alm]   ****** Hugh uncomment this line for new app lem with resp= grammar and remove this comment ******
+	: [glyph g] = [glyph g]
+	: [hand_shift hs] = [hand_shift hs]
+	: [spaceitem s] = [spaceitem s]
+	: [note n] = [note n]
+	: [foreign_lang fl] = [foreign_lang fl]
+	: [figure f] = [figure f]
+	>: [del_rend dr] = [del_rend dr]
+	: [vestige v] = [vestige v]
+	: [nontran_characters nc] = [nontran_characters nc]
+	: [nontran_column nc] = [nontran_column nc]
+	: [lost_lines ll] = [lost_lines ll]
+	: [lost_lines_unknown llu] = [lost_lines_unknown llu]
+	: [omitted o] = [omitted o]
+	: [surplus s] = [surplus s]
+	: [expan e] = [expan e]
+	//---multiple tests see inside_brackets production---
+	// [ ], [[ ]], [ca.?] etc...
+	>: "[" [inside_brackets i] "]" =  [inside_brackets i] 	
+
+	//test below are after inside_brackets to keep from getting the definitions confused
+
+	//---test_illegible_gap_unknown---
+	// .?, ".?(?) " - space at end required
+	: ".?" = <gap reason="illegible" extent="unknown" unit="character"></>
+	>: ".?(?) " = <gap reason="illegible" extent="unknown" unit="character"><certainty match=".." locus="name"></></>
+
+	>: [ANYLETTER a] = [ANYLETTER a]
+
+  //foreign 
+  //~|foreign words"|~la
+	>: [foritem f] = [foritem f]
+	
+	
+// end of 'item_can_nest' production - all the productions below are called from above
+	
+	
+	//---special_lines---
+	//(23, perp), (23.-, perp)
+special_lines
+	: "(" [LINENUM v] ", " [WORD w] ")" = <lb n=[LINENUM v] rend=[WORD w]/>
+	>: "(" [LINENUM v] ".-, " [WORD w] ")" = <lb n=[LINENUM v] rend=[WORD w] break="no"/>
+
+	//---test_abbreviation_unknown_resolution---
+	// (|ab|), (|ab(?)|)
+abbreviation_unknown_resolution
+	: [BEGABBR] [WORD w] [ENDABBR] = <abbr>[WORD w]</>
+	>: [BEGABBR] [WORD w] "(?)" [ENDABBR] = <abbr>[WORD w]<certainty locus="name" match=".."/></>
+	>: [BEGABBR] [items w] [ENDABBR] = <abbr>[items w]</>
+	>: [BEGABBR] [items w] "(?)" [ENDABBR] = <abbr>[items w]<certainty locus="name" match=".."/></>
+
+uncertain_diacritical
+	: [uncertain_diacritical_diaeresis udd] = [uncertain_diacritical_diaeresis udd]
+	: [uncertain_diacritical_grave udg] = [uncertain_diacritical_grave udg]
+	: [uncertain_diacritical_spiritus_asper udsa] = [uncertain_diacritical_spiritus_asper udsa]
+	: [uncertain_diacritical_acute uda] = [uncertain_diacritical_acute uda]
+	: [uncertain_diacritical_circumflex udc] = [uncertain_diacritical_circumflex udc]
+	: [uncertain_diacritical_spiritus_lenis udsl] = [uncertain_diacritical_spiritus_lenis udsl]
+
+//---test_uncertain_diacritical_diaeresis---
+	// (¨) U+00a8 " a(¨)", " a(¨)(?)", ạ(¨)", " ạ(¨)(?)", " [.1](¨)", " .2(¨)", " a(¨`)" - space in front required
+uncertain_diacritical_diaeresis
+	: " " [ANYLETTER a] "(¨)" = <hi rend="diaeresis">[ANYLETTER a]</>
+	: " " [ANYLETTER a] "(¨)(?)" = <hi rend="diaeresis">[ANYLETTER a]<certainty match=".." locus="value"/></>
+	>: " " [ANYLETTER a] [UNDERDOT] "(¨)" = <hi rend="diaeresis"><unclear>[ANYLETTER a]</></>
+	>: " " [ANYLETTER a] [UNDERDOT] "(¨)(?)" = <hi rend="diaeresis"><unclear>[ANYLETTER a]</><certainty match=".." locus="value"/></>
+	>: " " "[." [NUM n] "]" "(¨)" = <hi rend="diaeresis"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "(¨)" = <hi rend="diaeresis"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "(¨" [nestanc n] ")" = <hi rend="diaeresis"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+	
+	//---test_uncertain_diacritical_grave---
+	// (`) u+0060 - same as diaeresis with grave in parens
+uncertain_diacritical_grave
+	: " " [ANYLETTER a] "(`)" = <hi rend="grave">[ANYLETTER a]</>
+	>: " " [ANYLETTER a] [UNDERDOT] "(`)" = <hi rend="grave"><unclear>[ANYLETTER a]</></>
+	>: " " "[." [NUM n] "]" "(`)" = <hi rend="grave"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "(`)" = <hi rend="grave"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "(`" [nestanc n] ")" = <hi rend="grave"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+	
+	//---test_uncertain_diacritical_spiritus_asper--- can also be known as greek dasia when combined with space per wikipeidia
+	// ( ῾) u+1ffe - same as diaeresis with spiritis_asper in parens
+uncertain_diacritical_spiritus_asper
+	: " " [ANYLETTER a] "( ῾)" = <hi rend="asper">[ANYLETTER a]</>
+	>: " " [ANYLETTER a] [UNDERDOT] "( ῾)" = <hi rend="asper"><unclear>[ANYLETTER a]</></>
+	>: " " "[." [NUM n] "]" "( ῾)" = <hi rend="asper"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "( ῾)" = <hi rend="asper"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "( ῾" [nestanc n] ")" = <hi rend="asper"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+	
+	//---test_uncertain_diacritical_acute---
+	// (´) u+00b4 - same as diaeresis with acute in parens
+uncertain_diacritical_acute
+	: " " [ANYLETTER a] "(´)" = <hi rend="acute">[ANYLETTER a]</>
+	>: " " [ANYLETTER a] [UNDERDOT] "(´)" = <hi rend="acute"><unclear>[ANYLETTER a]</></>
+	>: " " "[." [NUM n] "]" "(´)" = <hi rend="acute"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "(´)" = <hi rend="acute"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "(´" [nestanc n] ")" = <hi rend="acute"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+	
+	//---test_uncertain_diacritical_circumflex---
+	// (^) u+005e - same as diaeresis with circumflex in parens
+uncertain_diacritical_circumflex
+	: " " [ANYLETTER a] "(^)" = <hi rend="circumflex">[ANYLETTER a]</>
+	>: " " [ANYLETTER a] [UNDERDOT] "(^)" = <hi rend="circumflex"><unclear>[ANYLETTER a]</></>
+	>: " " "[." [NUM n] "]" "(^)" = <hi rend="circumflex"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "(^)" = <hi rend="circumflex"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "(^" [nestanc n] ")" = <hi rend="circumflex"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+	
+	//---test_uncertain_diacritical_spiritus_lenis--- can also be known as greek psili when combined with space per wikipeidia
+	// ( ᾿) U+1fbf - same as diaeresis with spiritus_lenis in parens
+uncertain_diacritical_spiritus_lenis
+	: " " [ANYLETTER a] "( ᾿)" = <hi rend="lenis">[ANYLETTER a]</>
+	>: " " [ANYLETTER a] [UNDERDOT] "( ᾿)" = <hi rend="lenis"><unclear>[ANYLETTER a]</></>
+	>: " " "[." [NUM n] "]" "( ᾿)" = <hi rend="lenis"><gap reason="lost" quantity=[NUM n] unit="character"/></>
+	>: " " "." [NUM n] "( ᾿)" = <hi rend="lenis"><gap reason="illegible" quantity=[NUM n] unit="character"/></>
+	>: " " [ANYLETTER a] "( ᾿" [nestanc n] ")" = <hi rend="lenis"><hi rend=[nestanc n]>[ANYLETTER a]</></>
+
+	//---supraline--- using combining macron and underdot if unclear also
+supraline_combine_macron
+	: [supraline_non_terminal s] = <hi rend="supraline">[supraline_non_terminal s]</>
+
+supra_unclears_non_terminal 
+  : [ANYLETTER a] [UNDERDOT] [COMBINMACRON] [supra_unclears_non_terminal mu] = [ANYLETTER a] [supra_unclears_non_terminal mu]
+  : [ANYLETTER a] [UNDERDOT] [COMBINMACRON] = [ANYLETTER a]
+
+supraline_non_terminal 
+  : [FRACSYM f] [COMBINMACRON] = [FRACSYM f]
+  : [ANYLETTER a] [COMBINMACRON] [supraline_non_terminal ms] = [ANYLETTER a] [supraline_non_terminal ms]
+  : [ANYLETTER a] [COMBINMACRON] = [ANYLETTER a]
+  : [supra_unclears_non_terminal su] [supraline_non_terminal ms] = <unclear>[supra_unclears_non_terminal su]</> [supraline_non_terminal ms]
+  : [supra_unclears_non_terminal su] = <unclear>[supra_unclears_non_terminal su]</>
+
+  //---test unclear characters = underdots
+unclear_characters
+	: [FRACSYM f] [UNDERDOT] = <unclear>[FRACSYM f]</>
+	>: [unclears_non_terminal u] = <unclear>[unclears_non_terminal u]</>
+
+	//---choice_correction---
+	//  <:a|corr|b|:>, <:a(?)|corr|b|:>, <:a|corr|b(?)|:>, <:a(?)|corr|b(?)|:> 
+choice_corr
+	: [BEGOPT] [WORDVEST a] "(?)" "|corr|" [WORDVEST b] [ENDOPT] = <choice><corr cert="low">[WORDVEST a]</><sic>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "(?)" "|corr|" [items d] "(?)" [ENDOPT] = <choice><corr cert="low">[WORDVEST a]</><sic>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [WORDVEST a] "|corr|" [items d] "(?)" [ENDOPT] = <choice><corr>[WORDVEST a]</><sic>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|corr|" [items d] "(?)" [ENDOPT] = <choice><corr cert="low">[items a]</><sic>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "|corr|" [items d] "(?)" [ENDOPT] = <choice><corr>[items a]</><sic>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|corr|" [items d] [ENDOPT] = <choice><corr cert="low">[items a]</><sic>[items d]</></>
+	: [BEGOPT] [WORDVEST a] "|corr|" [WORDVEST b] [ENDOPT] = <choice><corr>[WORDVEST a]</><sic>[WORDVEST b]</></>
+	>: [BEGOPT] [items a] "|corr|" [WORDVEST b] [ENDOPT] = <choice><corr>[items a]</><sic>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "|corr|" [items b] [ENDOPT] = <choice><corr>[WORDVEST a]</><sic>[items b]</></>
+	>: [BEGOPT] [items a] "|corr|" [items b] [ENDOPT] = <choice><corr>[items a]</><sic>[items b]</></>
+
+	//---choice_reg_orig---
+	//  <:a|reg|b:>, <:a(?)|reg|b:>, <:a|reg|b(?):>, <:a(?)|reg|b(?):>
+	//  <:a=la|reg|b:>, <:a(?)=la|reg|b:>, <:a=la|reg|b(?):>, <:a(?)=la|reg|b(?):>
+	//  <:a|d|e||reg||b:>, <:a|d|e||reg||b(?):>, <:a|d(?)|e||reg||b:>, <:a|d(?)=la|e||reg||b:>
+choice_reg
+	: [BEGOPT] [WORDVEST a] "(?)" "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg cert="low">[WORDVEST a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "(?)" "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg cert="low">[WORDVEST a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [WORDVEST a] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg>[WORDVEST a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg cert="low">[items a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg>[items a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|reg|" [WORDVEST d] [ENDOPT] = <choice><reg cert="low">[items a]</><orig>[WORDVEST d]</></>
+	>: [BEGOPT] [items a] "(?)" "|reg|" [items d] [ENDOPT] = <choice><reg cert="low">[items a]</><orig>[items d]</></>
+	: [BEGOPT] [WORDVEST a] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg>[WORDVEST a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [items a] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg>[items a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "|reg|" [items b] [ENDOPT] = <choice><reg>[WORDVEST a]</><orig>[items b]</></>
+	>: [BEGOPT] [items a] "|reg|" [items b] [ENDOPT] = <choice><reg>[items a]</><orig>[items b]</></>
+// |reg| with lang attribute
+	>: [BEGOPT] [WORDVEST a] "(?)" "=" [WORD c] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[WORDVEST a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "(?)" "=" [WORD c] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[WORDVEST a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [WORDVEST a] "(?)" "=" [WORD c] "|reg|" [items d] [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[WORDVEST a]</><orig>[items d]</></>
+	>: [BEGOPT] [items a] "(?)" "=" [WORD c] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[items a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [items a] "(?)" "=" [WORD c] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[items a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "=" [WORD c] "|reg|" [items d] [ENDOPT] = <choice><reg xml:lang=[WORD c] cert="low">[items a]</><orig>[items d]</></>
+	>: [BEGOPT] [WORDVEST a] "=" [WORD c] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg xml:lang=[WORD c]>[WORDVEST a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "=" [WORD c] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg xml:lang=[WORD c]>[WORDVEST a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [WORDVEST a] "=" [WORD c] "|reg|" [items d] [ENDOPT] = <choice><reg xml:lang=[WORD c]>[WORDVEST a]</><orig>[items d]</></>
+	>: [BEGOPT] [items a] "=" [WORD c] "|reg|" [WORDVEST b] [ENDOPT] = <choice><reg xml:lang=[WORD c]>[items a]</><orig>[WORDVEST b]</></>
+	>: [BEGOPT] [items a] "=" [WORD c] "|reg|" [items d] "(?)" [ENDOPT] = <choice><reg xml:lang=[WORD c]>[items a]</><orig>[items d]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "=" [WORD c] "|reg|" [items d] [ENDOPT] = <choice><reg xml:lang=[WORD c]>[items a]</><orig>[items d]</></>
+	
+//multiple reg tags - needs to be down here or nested regs above not work correctly
+	: [BEGOPT][multregs a][WORDVEST e][ENDOPT] = <choice>[multregs a]<orig>[WORDVEST e]</></>
+	>: [BEGOPT][multregs a][items e][ENDOPT] = <choice>[multregs a]<orig>[items e]</></>
+	>: [BEGOPT][multregs a][items e] "(?)"[ENDOPT] = <choice>[multregs a]<orig>[items e]<certainty match=".." locus="value"/></></>
+	
+	//---milestone---
+	//  '----' or  '--------'
+milestone
+	: "--------" = <milestone rend="horizontal-rule" unit="undefined"></>
+	: "~~~~~~~~" = <milestone rend="wavy-line" unit="undefined"></>
+	: "----" = <milestone rend="paragraphos" unit="undefined"></>
+	: "<---->" = <supplied reason="omitted"><milestone rend="paragraphos" unit="undefined"/></>
+	: "<----(?)>" = <supplied reason="omitted" cert="low"><milestone rend="paragraphos" unit="undefined"/></>
+	: "###" = <milestone rend="box" unit="undefined"></>
+	
+illegible_dot
+	: [illegible_dot_gap idg] = [illegible_dot_gap idg]
+	>: [illegible_dot_max idm] = [illegible_dot_max idm]
+	>: [illegible_dot_lin idl] = [illegible_dot_lin idl]
+	>: [illegible_dot_lin_extentmax idle] = [illegible_dot_lin_extentmax idle]
+	>: [illegible_gap_ca igc] = [illegible_gap_ca igc]
+	
+	//---test_illegible_dot_gap---
+	// .1, .2, .3 
+illegible_dot_gap
+	: [DOT] [NUM n] = <gap reason="illegible" quantity=[NUM n] unit="character"></>
+	>: [DOT] [NUM n] "(?) " = <gap reason="illegible" quantity=[NUM n] unit="character"><certainty match=".." locus="name"></></>  
+	
+	//---test_illegible_dot_max---
+	// .1-3, .1-3(?) 
+illegible_dot_max
+	: [DOT] [NUM v] "-" [NUM w] = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="character"></>
+	>: [DOT] [NUM v] "-" [NUM w] "(?) " = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="character"><certainty match=".." locus="name"></></>
+	
+	//---test_illegible_dot_lin---
+	// .1lin, .2lin, .3lin, .3lin(?) 
+illegible_dot_lin
+	: [DOT] [NUM n] "lin" = <gap reason="illegible" quantity=[NUM n] unit="line"></>  
+	>: [LEADCA] [NUM n] "lin" = <gap reason="illegible" quantity=[NUM n] unit="line" precision="low"></>
+	>: [LEADCA] [NUM n] "lin(?) " = <gap reason="illegible" quantity=[NUM n] unit="line" precision="low"><certainty match=".." locus="name"></></>
+	>: [DOT] [NUM n] "lin(?) " = <gap reason="illegible" quantity=[NUM n] unit="line"><certainty match=".." locus="name"></></>  
+	
+	//---test_illegible_dot_lin_extentmax---
+	// .1-2lin. .1-2lin(?) 
+illegible_dot_lin_extentmax
+	: [DOT] [NUM n] "-" [NUM w] "lin" = <gap reason="illegible" atLeast=[NUM n] atMost=[NUM w] unit="line"></>
+	>: [DOT] [NUM n] "-" [NUM w] "lin(?) " = <gap reason="illegible" atLeast=[NUM n] atMost=[NUM w] unit="line"><certainty match=".." locus="name"></></>  
+	
+	//---test_illegible_gap_ca---
+	// ca.1, ca.2, ca.3., ca.3(?) 
+illegible_gap_ca
+	: [LEADCA] [NUM n] = <gap reason="illegible" quantity=[NUM n] unit="character" precision="low"></>
+	>: [LEADCA] [NUM n] "(?) " = <gap reason="illegible" quantity=[NUM n] unit="character" precision="low"><certainty match=".." locus="name"></></>
+
+lang_gap
+	: [lang_gap_line lgl] = [lang_gap_line lgl]
+	>: [lang_gap_char lgc] = [lang_gap_char lgc]
+
+	//---test_lang_gap_line---
+	//(Lang: Demotic 2 lines), (Lang: Demotic 2 lines(?)), (Lang: Demotic ? lines), , (Lang: Demotic ? lines(?)) 
+lang_gap_line
+	: "(Lang: " [LANGLIST l] " " [NUM v] " lines)" = <gap reason="ellipsis" quantity=[NUM v] unit="line"><desc>[LANGLIST l]</></>
+	>: "(Lang: " [LANGLIST l] " " [NUM v] " lines(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="line"><desc>[LANGLIST l]</><certainty match=".." locus="name"></></>
+	>: "(Lang: " [LANGLIST l] " ca." [NUM v] " lines)" = <gap reason="ellipsis" quantity=[NUM v] unit="line" precision="low"><desc>[LANGLIST l]</></>
+	>: "(Lang: " [LANGLIST l] " ca." [NUM v] " lines(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="line" precision="low"><desc>[LANGLIST l]</><certainty match=".." locus="name"></></>
+	>: "(Lang: " [LANGLIST l] " ? lines)" = <gap reason="ellipsis" extent="unknown" unit="line"><desc>[LANGLIST l]</></>
+	>: "(Lang: " [LANGLIST l] " ? lines(?))" = <gap reason="ellipsis" extent="unknown" unit="line"><desc>[LANGLIST l]</><certainty match=".." locus="name"></></>
+	
+	//---test_lang_gap_char---
+	//(Lang: Demotic 2 char), (Lang: Demotic 2 char(?)), (Lang: Demotic ? char), (Lang: Demotic ? char(?)) 
+lang_gap_char
+	: "(Lang: " [LANGLIST l] " " [NUM v] " char)" = <gap reason="ellipsis" quantity=[NUM v] unit="character"><desc>[LANGLIST l]</></>
+	>: "(Lang: " [LANGLIST l] " " [NUM v] " char(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="character"><desc>[LANGLIST l]</><certainty match=".." locus="name"></></>
+	>: "(Lang: " [LANGLIST l] " ? char)" = <gap reason="ellipsis" extent="unknown" unit="character"><desc>[LANGLIST l]</></>
+	>: "(Lang: " [LANGLIST l] " ? char(?))" = <gap reason="ellipsis" extent="unknown" unit="character"><desc>[LANGLIST l]</><certainty match=".." locus="name"></></>
+	
+	//---test_lines_not_transcribed---
+	// (Lines: 2 non transcribed), (Lines: 2 non transcribed(?)), (Lines: ca.2 non transcribed), (Lines: ca.2 non transcribed(?))
+	// (Lines: ? non transcribed), (Lines: ? non transcribed(?)), (Lines: 1-2 non transcribed), (Lines: 1-2 non transcribed(?))  
+lines_not_transcribed
+	: "(Lines: " [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="line"><desc>"non transcribed"</></>
+	>: "(Lines: " [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="line"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Lines: ca." [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="line" precision="low"><desc>"non transcribed"</></>
+	>: "(Lines: ca." [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="line" precision="low"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Lines: ? non transcribed)" = <gap reason="ellipsis" extent="unknown" unit="line"><desc>"non transcribed"</></>
+	>: "(Lines: ? non transcribed(?))" = <gap reason="ellipsis" extent="unknown" unit="line"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Lines: " [NUM v] "-" [NUM w] " non transcribed)" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="line"><desc>"non transcribed"</></>
+	>: "(Lines: " [NUM v] "-" [NUM w] " non transcribed(?))" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="line"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	
+	//---subscript---
+	//   \|abc|/, \|abc(?)|/
+hi_subscript
+	: "\\\|" [WORDSSIC a] "\|\/" = <hi rend="subscript">[WORDSSIC a]</>
+	>: "\\\|" [WORDSSIC a] "(?)" "\|\/" = <hi rend="subscript">[WORDSSIC a]<certainty match=".." locus="value"/></>
+	>: "\\\|" [items i] "\|\/" = <hi rend="subscript">[items i]</>
+	>: "\\\|" [items i] "(?)" "\|\/" = <hi rend="subscript">[items i]<certainty match=".." locus="value"/></>
+	
+	//---tall---
+	//   ~||abc||~tall
+hi_tall
+	: "~||" [WORDSSIC a] "||~tall" = <hi rend="tall">[WORDSSIC a]</>
+	>: "~||" [items i] "||~tall" = <hi rend="tall">[items i]</>
+
+	//---superscript---
+	//   |^abc^|
+hi_superscript
+  : "|\^" [WORDSSIC a] "\^|" = <hi rend="superscript">[WORDSSIC a]</>
+	>: "|\^" [items i] "\^|" = <hi rend="superscript">[items i]</>
+	
+add_place
+	: [add_place_interlinear apl] = [add_place_interlinear apl]
+	: [add_place_general apg] = [add_place_general apg]
+	: [add_place_margin_sling apms] = [add_place_margin_sling apms]
+	: [add_place_margin_underline apmu] = [add_place_margin_underline apmu]
+	: [add_place_above apa] = [add_place_above apa]
+	: [add_place_below apb] = [add_place_below apb]
+	
+	//---add_place_interlinear---
+	//  ||interlin:abc||, ||interlin:abc(?)||
+add_place_interlinear
+	: "||interlin:" [WORDSSIC a] "||" = <add place="interlinear">[WORDSSIC a]</>
+	>: "||interlin:" [WORDSSIC a] "(?)||" = <add place="interlinear">[WORDSSIC a]<certainty match=".." locus="name"/></>
+	>: "||interlin:" [items a] "||" = <add place="interlinear">[items a]</>
+	>: "||interlin:" [items a] "(?)||" = <add place="interlinear">[items a]<certainty match=".." locus="name"/></>
+
+	//---add_place_general---
+	//  ||bottom:abc||, ||bottom:abc(?)||
+add_place_general
+	: "||" [ADDLIST a] ":" [WORDSSIC b] "||" = <add place=[ADDLIST a]>[WORDSSIC b]</>
+	>: "||" [ADDLIST a] ":" [WORDSSIC b] "(?)||" = <add place=[ADDLIST a]>[WORDSSIC b]<certainty match=".." locus="name"/></>
+	>: "||" [ADDLIST a] ":" [items b] "||" = <add place=[ADDLIST a]>[items b]</>
+	>: "||" [ADDLIST a] ":" [items b] "(?)||" = <add place=[ADDLIST a]>[items b]<certainty match=".." locus="name"/></>
+	
+	//---add_place_margin_sling---
+	//  <|abc|>, <|abc(?)|> 
+add_place_margin_sling
+  : "<|" [WORDSSIC a] "|>" = <add rend="sling" place="margin">[WORDSSIC a]</>
+  >: "<|" [WORDSSIC a] "(?)|>" = <add rend="sling" place="margin">[WORDSSIC a]<certainty match=".." locus="name"/></>
+	>: "<|" [items a] "|>" = <add rend="sling" place="margin">[items a]</>
+	>: "<|" [items a] "(?)|>" = <add rend="sling" place="margin">[items a]<certainty match=".." locus="name"/></>
+	
+	//---add_place_margin_underline---
+	//  <_abc_>, <_abc(?)_> 
+add_place_margin_underline
+  : "<_" [WORDSSIC a] "_>" = <add rend="underline" place="margin">[WORDSSIC a]</>
+  >: "<_" [WORDSSIC a] "(?)_>" = <add rend="underline" place="margin">[WORDSSIC a]<certainty match=".." locus="name"/></>
+	>: "<_" [items a] "_>" = <add rend="underline" place="margin">[items a]</>
+	>: "<_" [items a] "(?)_>" = <add rend="underline" place="margin">[items a]<certainty match=".." locus="name"/></>
+	
+	//---add_place_above---
+	//  \abc/, \abc(?)/
+add_place_above
+	: "\\" [WORDSSIC a] "\/" = <add place="above">[WORDSSIC a]</>
+	>: "\\" [WORDSSIC a] "(?)\/" = <add place="above">[WORDSSIC a]<certainty match=".." locus="name"/></>
+	>: "\\" [items a] "\/" = <add place="above">[items a]</>
+	>: "\\" [items a] "(?)\/" = <add place="above">[items a]<certainty match=".." locus="name"/></>
+	
+	//---add_place_below---
+	//   //abc\\, //abc(?)\\
+add_place_below
+	: "\/\/" [WORDSSIC a] "\\\\" = <add place="below">[WORDSSIC a]</>
+	>: "\/\/" [WORDSSIC a] "(?)\\\\" = <add place="below">[WORDSSIC a]<certainty match=".." locus="name"/></>
+	>: "\/\/" [items a] "\\\\" = <add place="below">[items a]</>
+	>: "\/\/" [items a] "(?)\\\\" = <add place="below">[items a]<certainty match=".." locus="name"/></>
+	
+	//---supraline---
+	//   ¯markup¯ - uses non-combining macron
+supraline_non_combine_macron
+  : "¯" [hi_supra_not_nest_items i] "¯" = <hi rend="supraline">[hi_supra_not_nest_items i]</>
+		
+	//---supraline_underline---
+	//   ¯_abc_¯ - uses non-combining macron with underline
+hi_supraline_underline
+  : "¯_" [WORDSSIC a] "_¯" = <hi rend="supraline-underline">[WORDSSIC a]</>
+  >: "¯_" [items i] "_¯" = <hi rend="supraline-underline">[items i]</>
+		
+	//---undefined_parallel---
+	//  |_abc_|, |_abc(?)_|  - underlines 
+undefined_parallel
+		: "|_" [WORDSSIC a] "_|" = <supplied evidence="parallel" reason="undefined">[WORDSSIC a]</>
+	: "|_" [WORDSSIC a] "(?)_|" = <supplied evidence="parallel" reason="undefined" cert="low">[WORDSSIC a]</>
+	>: "|_" [items a] "_|" = <supplied evidence="parallel" reason="undefined">[items a]</>
+	>: "|_" [items a] "(?)_|" = <supplied evidence="parallel" reason="undefined" cert="low">[items a]</>
+		
+	//---lost_parallel---
+	//  _[abc]_, _[abc(?)]_  - underlines
+lost_parallel
+	: "_[" [WORDSSIC a] "]_" = <supplied evidence="parallel" reason="lost">[WORDSSIC a]</>
+	: "_[" [WORDSSIC a] "(?)]_" = <supplied evidence="parallel" reason="lost" cert="low">[WORDSSIC a]</>
+	>: "_[" [items a] "]_" = <supplied evidence="parallel" reason="lost">[items a]</>
+	>: "_[" [items a] "(?)]_" = <supplied evidence="parallel" reason="lost" cert="low">[items a]</>
+
+fraction
+	//---number or fraction_no_symbol---
+	: "<#=" [FRACNUM s] [ENDNUM] = <num value=[FRACNUM s]/>
+
+	//---fraction_number and whole_number symbol and multi_symbol---
+	: [BEGNUM] [WORD o] [morenum m] "=" [NUM s] [ENDNUM] = <num value=[NUM s]>[WORD o] [morenum m]</>
+	>: [BEGNUM] [items o] "=frac" [ENDNUM] = <num type="fraction">[items o]</>
+	>: [BEGNUM] [items o] " '=frac" [ENDNUM] = <num type="fraction" rend="tick">[items o]</>
+	>: [BEGNUM] [items o] " '=" [FRACNUM s] [ENDNUM] = <num value=[FRACNUM s] rend="tick">[items o]</>
+	>: [BEGNUM] [items o] " '=" [FRACNUM s] "(?)" [ENDNUM] = <num value=[FRACNUM s] rend="tick">[items o]<certainty match="../@value" locus="value"/></>
+	>: [BEGNUM] [items o] "=" [FRACNUM s] [ENDNUM] = <num value=[FRACNUM s]>[items o]</>
+	>: [BEGNUM] [items o] "=" [FRACNUM s] "(?)" [ENDNUM] = <num value=[FRACNUM s]>[items o]<certainty match="../@value" locus="value"/></>
+	>: [BEGNUM] [items o] " '=" [ENDNUM] = <num rend="tick">[items o]</>
+	>: [BEGNUM] [items o] "=" [ENDNUM] = <num>[items o]</>
+	>: [BEGNUM] [items o] "=" [NUM l] "-?" [ENDNUM] = <num atLeast=[NUM l]>[items o]</>
+	>: [BEGNUM] [items o] "=" [NUM l] "-" [NUM m] [ENDNUM] = <num atLeast=[NUM l] atMost=[NUM m]>[items o]</>
+		
+	//---subst---
+	//  <:a|subst|b|:>, <:a|subst|b(?)|:>, <:a(?)|subst|b|:>, <:a(?)|subst|b(?)|:> 
+subst
+	: [BEGOPT] [items a] "|subst|" [items b] [ENDOPT] = <subst><add place="inline">[items a]</><del rend="corrected">[items b]</></>
+	>: [BEGOPT] [items a] "|subst|" [items b] "(?)" [ENDOPT] = <subst><add place="inline">[items a]</><del rend="corrected">[items b]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|subst|" [items b] [ENDOPT] = <subst><add place="inline">[items a]<certainty match=".." locus="value"/></><del rend="corrected">[items b]</></>
+	>: [BEGOPT] [items a] "(?)" "|subst|" [items b] "(?)" [ENDOPT] = <subst><add place="inline">[items a]<certainty match=".." locus="value"/></><del rend="corrected">[items b]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] "|subst|" [items b] [ENDOPT] = <subst><add place="inline"></><del rend="corrected">[items b]</></>
+	>: [BEGOPT] [items a] "|subst|" [WORDVEST b] [ENDOPT] = <subst><add place="inline">[items a]</><del rend="corrected">[WORDVEST b]</></>
+	>: [BEGOPT] [WORDVEST a] "|subst|" [items b] [ENDOPT] = <subst><add place="inline">[WORDVEST a]</><del rend="corrected">[items b]</></>
+	>: [BEGOPT] [WORDVEST a] "(?)" "|subst|" [items b] [ENDOPT] = <subst><add place="inline">[WORDVEST a]<certainty match=".." locus="value"/></><del rend="corrected">[items b]</></>
+	>: [BEGOPT] [WORDVEST a] "|subst|" [WORDVEST b] [ENDOPT] = <subst><add place="inline">[WORDVEST a]</><del rend="corrected">[WORDVEST b]</></>
+	
+//start of original app_lem ********************************************************************** Hugh
+	//---app_lem---
+	//  <:abc|alt|def|:>, <:abc(?)|alt|def|:>, <:abc|alt|def(?)|:>, <:abc(?)|alt|def(?)|:>, , <:abc|alt||:>, <:abc(?)|alt||:>, <:|alt|def|:>, <:|alt|def(?)|:>
+	//  <:abc||alt||def|ghi|jkl|:>, <:abc||alt||def|ghi(?)|jkl|:>, <:abc(?)||alt||def|ghi|jkl|:>, <:abc(?)||alt||def|ghi(?)|jkl|:>
+app_lem	
+	>: [BEGOPT] [items a] "|alt|" [items b] [ENDOPT] = <app type="alternative"><lem>[items a]</><rdg>[items b]</></>
+	>: [BEGOPT] [items a] "(?)" "|alt|" [items b] [ENDOPT] = <app type="alternative"><lem>[items a]<certainty match=".." locus="value"/></><rdg>[items b]</></>
+	>: [BEGOPT] [items a] "|alt|" [items b] "(?)" [ENDOPT] = <app type="alternative"><lem>[items a]</><rdg>[items b]<certainty match=".." locus="value"/></></>
+	>: [BEGOPT] [items a] "(?)" "|alt|" [items b] "(?)"[ENDOPT] = <app type="alternative"><lem>[items a]<certainty match=".." locus="value"/></><rdg>[items b]<certainty match=".." locus="value"/></></>
+//line below added for empty tag rdg on alternative
+	>: [BEGOPT] [items a] "|alt|" [ENDOPT] = <app type="alternative"><lem>[items a]</><rdg></></>
+	>: [BEGOPT] [items a] "(?)" "|alt|" [ENDOPT] = <app type="alternative"><lem>[items a]<certainty match=".." locus="value"/></><rdg></></>
+//line below added for empty tag lem on alternative
+	>: [BEGOPT] "|alt|" [items b] [ENDOPT] = <app type="alternative"><lem/><rdg>[items b]</></>
+	>: [BEGOPT] "|alt|" [items b] "(?)" [ENDOPT] = <app type="alternative"><lem/><rdg>[items b]<certainty match=".." locus="value"/></></>
+	
+//multiple rdg tags - needs to be down here or nested regs above not work correctly
+	: [BEGOPT][items a] "||alt||" [mult_alt_rdgs b][ENDOPT] = <app type="alternative"><lem>[items a]</>[mult_alt_rdgs b]</>
+	>: [BEGOPT][items a] "(?)||alt||"[mult_alt_rdgs b][ENDOPT] = <app type="alternative"><lem>[items a]<certainty match=".." locus="value"/></>[mult_alt_rdgs b]</>
+
+mult_alt_rdgs
+  : [items a] "(?)|" [mult_alt_rdgs more] = <rdg>[items a]<certainty match=".." locus="value"/></>[mult_alt_rdgs more]
+  >: [items a] "(?)" = <rdg>[items a]<certainty match=".." locus="value"/></>
+  : [items a] "|" [mult_alt_rdgs more] = <rdg>[items a]</>[mult_alt_rdgs more]
+  >: [items a] = <rdg>[items a]</>
+//end of original app_lem ********************************************************************** Hugh
+
+
+// Hugh - to change 'app type="alternative" grammar to allow resp= on lem and rdg like 'editorial'
+// comment or remove the lines above between 'start of original app_lem' and 'end of original app_lem'
+// uncomment the lines below between 'start of new app_lem with resp=' and 'end of new app_lem with resp=' 
+// this grammar uses the exact same lem and rdg grammar as the 'editorial' 
+// uncomment the 'test_new_alternative' test cases in test_grammar.rb also
+
+
+//start of new app_lem with resp= ********************************************************************** Hugh
+//	//---app_lem---
+//	//  <:abc|alt|def:>, <:abc=citation|alt|def:>, <:abc(?)|alt|def:>, <:abc(?)=citation|alt|def:>, 
+//	//  <:abc|alt|def=citation:>, <:abc|alt|def(?):>, <:abc|alt|def(?)=citation:>,
+//	//  <:abc||alt||def|ghi|jkl|:>, <:abc||alt||def|ghi(?)|jkl|:>, <:abc||alt||def|ghi=citation|jkl|:>, <:abc(?)||alt||def|ghi(?)=citation|jkl|:>,
+//	//  and other combinations of above = standardized citations starting with BL and PN are editorial board enforced
+//app_lem
+//  : [BEGOPT] [lem_stuff a] "|alt|" [rdg_stuff b] [ENDOPT] = <app type="alternative">[lem_stuff a][rdg_stuff b]</>
+//
+//app_lem_mult
+//  >: [BEGOPT] [lem_stuff a] "||alt||" [mult_ed_rdgs b] [ENDOPT] = <app type="alternative">[lem_stuff a][mult_ed_rdgs b]</>
+//end of new app_lem with resp= ********************************************************************** Hugh
+	
+	//---app_ed---
+	//  <:abc|ed|def:>, <:abc=citation|ed|def:>, <:abc(?)|ed|def:>, <:abc(?)=citation|ed|def:>, 
+	//  <:abc|ed|def=citation:>, <:abc|ed|def(?):>, <:abc|ed|def(?)=citation:>,
+	//  <:abc||ed||def|ghi|jkl|:>, <:abc||ed||def|ghi(?)|jkl|:>, <:abc||ed||def|ghi=citation|jkl|:>, <:abc(?)||ed||def|ghi(?)=citation|jkl|:>,
+	//  and other combinations of above = standardized citations starting with BL and PN are editorial board enforced
+app_ed
+  : [BEGOPT] [lem_stuff a] "|ed|" [rdg_stuff b] [ENDOPT] = <app type="editorial">[lem_stuff a][rdg_stuff b]</>
+
+app_ed_mult
+  >: [BEGOPT] [lem_stuff a] "||ed||" [mult_ed_rdgs b] [ENDOPT] = <app type="editorial">[lem_stuff a][mult_ed_rdgs b]</>
+  
+mult_ed_rdgs
+  : [rdg_stuff a] "|" [mult_ed_rdgs more] = [rdg_stuff a][mult_ed_rdgs more]
+  >: [rdg_stuff a] = [rdg_stuff a]
+  
+lem_stuff
+  : [items a] "(?)=" [ED_CITATION e] = <lem resp=[ED_CITATION e]>[items a]<certainty match=".." locus="value"/></>
+  : [items a] "=" [ED_CITATION e] = <lem resp=[ED_CITATION e]>[items a]</>
+  : [items a] "(?)" = <lem>[items a]<certainty match=".." locus="value"/></>
+  : [items a] = <lem>[items a]</>
+  : = <lem></>
+  : "=" [ED_CITATION e] = <lem resp=[ED_CITATION e]></>
+
+rdg_stuff
+  : [items a] "(?)=" [ED_CITATION e] = <rdg resp=[ED_CITATION e]>[items a]<certainty match=".." locus="value"/></>
+  : [items a] "=" [ED_CITATION e] = <rdg resp=[ED_CITATION e]>[items a]</>
+  : [items a] "(?)" = <rdg>[items a]<certainty match=".." locus="value"/></>
+  : [items a] = <rdg>[items a]</>
+  : = <rdg></>
+  : "=" [ED_CITATION e] = <rdg resp=[ED_CITATION e]></>
+  
+	//---glyph---
+	//  *a*, *a?*, *a,b*, *a?,b*, *filler(a)*, *filler(a)?*  
+glyph
+	: "*" [WORD k] "?*" = <unclear><g type=[WORD k]></></>
+	: "*filler(" [WORD a] ")?*" = <unclear><g rend=[WORD a] type="filler"></></>
+	: "*" [WORD a] "*" = <g type=[WORD a]></>
+	: "*" [WORD a] "," [WORD b] "*" = <g type=[WORD a]>[WORD b]</>
+	>: "*" [WORD a] "," [items b] "*" = <g type=[WORD a]>[items b]</>
+	: "*" [WORD a] "?," [WORD b] "*" = <unclear><g type=[WORD a]>[WORD b]</></>
+	>: "*" [WORD a] "?," [items b] "*" = <unclear><g type=[WORD a]>[items b]</></>
+	: "*filler(" [WORD a] ")" "*" = <g rend=[WORD a] type="filler"></>
+	
+	//---hand_shift---
+	//  "$m1 ", "$m1(?) " - space afterward required 
+hand_shift
+	: "$" [HANDSHIFT h] " " = <handShift new=[HANDSHIFT h]></>
+	>: "$" [HANDSHIFT h] "(?) " = <handShift new=[HANDSHIFT h] cert="low"></>
+	
+	//---note---
+	//  /*abcdefg*/, /*PFlor 1,104,r reprinted in (ref=p.vind.pher;;Anhang=PVindPherAnhang)*/ 
+note
+	: "\/*" [WORDSN a] "*\/" = <note xml:lang="en">[WORDSN a]</>
+	>: "\/*" [items b] "*\/" = <note xml:lang="en">[items b]</>
+	>: "\/*" [WORDSN a] "(ref=" [WORDSN n] "=" [WORDSN t] ")*\/" = <note xml:lang="en">[WORDSN a]<ref n=[WORDSN n] type="reprint-in">[WORDSN t]</></>
+	>: "\/*" [items b] "(ref=" [WORDSN n] "=" [WORDSN t] ")*\/" = <note xml:lang="en">[items b]<ref n=[WORDSN n] type="reprint-in">[WORDSN t]</></>
+	
+	//---foreign_lang with mark up and colon or dot---
+	//  "~veni [vedi] vici~la " - space at end required  
+foreign_lang
+	: "~|" [items a] "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]</>
+	>: "~|" [items a] ": " "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]": "</>
+	>: "~|" [items a] ":" "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]":"</>
+	>: "~|" [items a]": "[items d] "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]": "[items d]</>
+	>: "~|" [items a]": "[items d]": " "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]": "[items d]": "</>
+	>: "~|" [items a] ". " "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]". "</>
+	>: "~|" [items a] "." "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]"."</>
+	>: "~|" [items a]". "[items d] "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]". "[items d]</>
+	>: "~|" [items a]". "[items d]". " "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[items a]". "[items d]". "</>
+	
+	//---figure---
+	//  #seal 
+figure
+	: "#" [WORD a] " " = <figure><figDesc>[WORD a]</></>
+
+	//---del_rend--_
+	//  all del_rends start with double bracket unicode U+301A "〚" and end with double bracket unicode U+301B "〛" - depending on your font you may not see them
+del_rend
+	: [del_rend_cross drc] = [del_rend_cross drc]
+	>: [del_rend_slashes drs] = [del_rend_slashes drs]
+	>: [del_rend_erasure dre] = [del_rend_erasure dre]
+
+	//---del_rend_cross---
+	//  〚Xwhatever〛, 〚Xwhatever(?)〛
+del_rend_cross
+	>: "〚X" [items a] "〛" = <del rend="cross-strokes">[items a]</>
+	>: "〚X" [items a] "(?)" "〛" = <del rend="cross-strokes">[items a]<certainty match=".." locus="value"/></>
+
+	//---del_rend_slashes---
+	//  〚/whatever〛, 〚/whatever(?)〛
+del_rend_slashes
+	>: "〚\/" [items a] "〛" = <del rend="slashes">[items a]</>
+	>: "〚\/" [items a] "(?)" "〛" = <del rend="slashes">[items a]<certainty match=".." locus="value"/></>
+
+//this one has to be last so the first case will be caught before get here because '-' is a valid WORDS character
+	//---del_rend_erasure---
+	//  〚whatever〛, 〚whatever(?)〛
+del_rend_erasure
+	>: "〚" [items a] "〛" = <del rend="erasure">[items a]</>
+	>: "〚" [items a] "(?)" "〛" = <del rend="erasure">[items a]<certainty match=".." locus="value"/></>
+	
+vestige
+	: [vestige_lines vl] = [vestige_lines vl]
+	>: [vestige_lines_ca vlc] = [vestige_lines_ca vlc]
+	>: [vestige_lines_unknown vlu] = [vestige_lines_unknown vlu]
+	>: [vestige_known_char vkc] = [vestige_known_char vkc]
+	>: [vestige_characters vc] = [vestige_characters vc]
+
+	//---test_vestige_lines---
+	// vestig.1lin, vestig.1lin(?), vestig.1-3lin, vestig.1-3lin(?) 
+vestige_lines
+	: "vestig." [NUM n] "lin" = <gap reason="illegible" quantity=[NUM n] unit="line"><desc>"vestiges"</></>
+	>: "vestig." [NUM n] "lin(?) " = <gap reason="illegible" quantity=[NUM n] unit="line"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	>: "vestig." [NUM v] "-" [NUM w] "lin" = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="line"><desc>"vestiges"</></>
+	>: "vestig." [NUM v] "-" [NUM w] "lin(?) " = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="line"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	
+	//---test_vestige_lines_ca---
+	// vestig.ca.2lin, vestig.ca.2lin(?) 
+vestige_lines_ca
+	: "vestig.ca." [NUM n] "lin" = <gap reason="illegible" quantity=[NUM n] unit="line" precision="low"><desc>"vestiges"</></>
+	>: "vestig.ca." [NUM n] "lin(?) " = <gap reason="illegible" quantity=[NUM n] unit="line" precision="low"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	
+	//---test_vestige_lines_unknown---
+	// vestig.?lin, vestig.?lin(?) 
+vestige_lines_unknown
+	: "vestig.?lin" = <gap reason="illegible" extent="unknown" unit="line"></>
+	>: "vestig.?lin(?) " = <gap reason="illegible" extent="unknown" unit="line"><certainty match=".." locus="name"></></>
+	
+	//---test_vestige_known_char---
+	// vestig.1char, vestig.1char(?), vestig.ca.1char, vestig.ca.1char(?), vestig.1-3char, vestig.1-3char(?) 
+vestige_known_char
+	: "vestig." [NUM n] "char" = <gap reason="illegible" quantity=[NUM n] unit="character"><desc>"vestiges"</></>
+	>: "vestig." [NUM n] "char(?) " = <gap reason="illegible" quantity=[NUM n] unit="character"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	>: "vestig.ca." [NUM v] "char" = <gap reason="illegible" quantity=[NUM v] unit="character" precision="low"><desc>"vestiges"</></>
+	>: "vestig.ca." [NUM v] "char(?) " = <gap reason="illegible" quantity=[NUM v] unit="character" precision="low"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	>: "vestig." [NUM v] "-" [NUM w] "char" = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="character"><desc>"vestiges"</></>
+	>: "vestig." [NUM v] "-" [NUM w] "char(?) " = <gap reason="illegible" atLeast=[NUM v] atMost=[NUM w] unit="character"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	
+	//---test_vestige_characters---
+	// "vestig ", "vestig(?) " - space at end required  
+vestige_characters
+	: "vestig " = <gap reason="illegible" extent="unknown" unit="character"><desc>"vestiges"</></>
+	>: "vestig(?) " = <gap reason="illegible" extent="unknown" unit="character"><desc>"vestiges"</><certainty match=".." locus="name"></></>
+	
+	//---test_nontran_characters---
+	//  (Chars: 2 non transcribed), (Chars: 2 non transcribed(?)), (Chars: ca.2 non transcribed), (Chars: ca.2 non transcribed(?))
+	//  (Chars: ? non transcribed), (Chars: ? non transcribed(?)), (Chars: 2-3 non transcribed), (Chars: 2-3 non transcribed(?))
+nontran_characters
+	: "(Chars: " [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="character"><desc>"non transcribed"</></>
+	>: "(Chars: " [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="character"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Chars: ca." [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="character" precision="low"><desc>"non transcribed"</></>
+	>: "(Chars: ca." [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="character" precision="low"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Chars: ? non transcribed)" = <gap reason="ellipsis" extent="unknown" unit="character"><desc>"non transcribed"</></>
+	>: "(Chars: ? non transcribed(?))" = <gap reason="ellipsis" extent="unknown" unit="character"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Chars: " [NUM v] "-" [NUM w] " non transcribed)" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="character"><desc>"non transcribed"</></>
+	>: "(Chars: " [NUM v] "-" [NUM w] " non transcribed(?))" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="character"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	
+	//---test_nontran_column---
+	//  (Column:2 non transcribed), (Column: 2 non transcribed(?)), (Column: ca.2 non transcribed), (Column: ca.2 non transcribed(?))
+	//  (Column: ? non transcribed), (Column: ? non transcribed(?)), (Column: 2-3 non transcribed), (Column: 2-3 non transcribed(?))
+nontran_column
+	: "(Column: " [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="column"><desc>"non transcribed"</></>
+	>: "(Column: " [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="column"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Column: ca." [NUM v] " non transcribed)" = <gap reason="ellipsis" quantity=[NUM v] unit="column" precision="low"><desc>"non transcribed"</></>
+	>: "(Column: ca." [NUM v] " non transcribed(?))" = <gap reason="ellipsis" quantity=[NUM v] unit="column" precision="low"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Column: ? non transcribed)" = <gap reason="ellipsis" extent="unknown" unit="column"><desc>"non transcribed"</></>
+	>: "(Column: ? non transcribed(?))" = <gap reason="ellipsis" extent="unknown" unit="column"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	>: "(Column: " [NUM v] "-" [NUM w] " non transcribed)" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="column"><desc>"non transcribed"</></>
+	>: "(Column: " [NUM v] "-" [NUM w] " non transcribed(?))" = <gap reason="ellipsis" atLeast=[NUM v] atMost=[NUM w] unit="column"><desc>"non transcribed"</><certainty match=".." locus="name"></></>
+	
+	//---test_lost_lines---
+	// lost.3lin, lost.3lin(?), lost.ca.3lin, lost.ca.3lin(?), lost.3-5lin, lost.3-5lin(?) 
+lost_lines
+	: "lost." [NUM v] "lin" = <gap reason="lost" quantity=[NUM v] unit="line"></>
+	>: "lost.ca." [NUM v] "lin" = <gap reason="lost" quantity=[NUM v] unit="line" precision="low"></>
+	>: "lost.ca." [NUM v] "lin(?) " = <gap reason="lost" quantity=[NUM v] unit="line" precision="low"><certainty match=".." locus="name"></></>
+	>: "lost." [NUM v] "lin(?) " = <gap reason="lost" quantity=[NUM v] unit="line"><certainty match=".." locus="name"></></>
+	>: "lost." [NUM v] "-" [NUM w] "lin" = <gap reason="lost" atLeast=[NUM v] atMost=[NUM w] unit="line"></>
+	>: "lost." [NUM v] "-" [NUM w] "lin(?) " = <gap reason="lost" atLeast=[NUM v] atMost=[NUM w] unit="line"><certainty match=".." locus="name"></></>
+	
+	//---test_lost_lines_unknown---
+	// lost.?lin, lost.?lin(?) 
+lost_lines_unknown
+	: "lost.?lin" = <gap reason="lost" extent="unknown" unit="line"></>
+	>: "lost.?lin(?) " = <gap reason="lost" extent="unknown" unit="line"><certainty match=".." locus="name"></></>
+	
+	//---test_quotation_marks---
+	// "words or markup in quote"
+quotation_marks
+  : "\"" [quote_not_nest_items i] "\"" = <q>[quote_not_nest_items i]</>
+	
+	//---test_omitted---
+	//<.?>, <.3>, <abc>, <abc(?)> 
+omitted
+	: "<.?>" = <gap reason="omitted" extent="unknown" unit="character"/>
+	: "<." [NUM v] ">" = <gap reason="omitted" quantity=[NUM v] unit="character"/>
+	>: "<" [WORDS w] ">" = <supplied reason="omitted">[WORDS w]</>
+	>: "<" [WORDS w] "(?)" ">" = <supplied reason="omitted" cert="low">[WORDS w]</>
+	>: "<" [items i] ">" = <supplied reason="omitted">[items i]</>
+	>: "<" [items w] "(?)" ">" = <supplied reason="omitted" cert="low">[items w]</>
+	
+	//---test_surplus---
+	// {surplus words}, {surplus words(?)}
+surplus
+	>: "{" [WORDSSIC w] "}" = <surplus>[WORDSSIC w]</>	
+	>: "{" [items w] "}" = <surplus>[items w]</>
+	>: "{" [WORDSSIC w] "(?)}" = <surplus>[WORDSSIC w]<certainty match=".." locus="value"/></>	
+	>: "{" [items w] "(?)}" = <surplus>[items w]<certainty match=".." locus="value"/></>
+
+	//---test_expan---
+	// (expan(ex)), (expan(ex?)), ((ex)), (ab(c)def(gh)i(j)), (a[b(cd)]), ((ἑπτα)κω̣μ[ία̣]ς), (ab[cdef(ghi)(?)]), (ab[cdef(ghi?)]), (κ̣(ατ)οί̣|_κ(ων)_|)
+expan
+  : [BEGEXP][items a]"(" [WORDS4EXND b] ")" [ENDEXP] = <expan>[items a]<ex>[WORDS4EXND b]</></>
+  : [BEGEXP][items a]"(" [WORDS4EXND b] ")"[expanstuff s] [ENDEXP] = <expan>[items a]<ex>[WORDS4EXND b]</>[expanstuff s]</>
+  : [BEGEXP][items a]"(" [WORDS4EXND b] "?" ")" [ENDEXP] = <expan>[items a]<ex cert="low">[WORDS4EXND b]</></>
+  : [BEGEXP][items a]"(" [WORDS4EXND b] "?" ")"[expanstuff s] [ENDEXP] = <expan>[items a]<ex cert="low">[WORDS4EXND b]</>[expanstuff s]</>
+  >: [BEGEXP][items a]"[" [supexpan d] "]" [ENDEXP] = <expan>[items a]<supplied reason="lost">[supexpan d]</></>
+  >: [BEGEXP][items a]"[" [supexpan d] "]" [expanstuff s][ENDEXP] = <expan>[items a]<supplied reason="lost">[supexpan d]</>[expanstuff s]</>
+  >: [BEGEXP][items a]"[" [sup_special d] "(?)" "]" [ENDEXP] = <expan>[items a]<supplied reason="lost" cert="low">[sup_special d]</></>
+  >: [BEGEXP][items a]"[" [sup_special d] "(?)" "]" [expanstuff s][ENDEXP] = <expan>[items a]<supplied reason="lost" cert="low">[sup_special d]</>[expanstuff s]</>
+  >: [BEGEXP][items a]"|_" [sup_special d] "_|" [ENDEXP] = <expan>[items a]<supplied evidence="parallel" reason="undefined">[sup_special d]</></>
+  >: [BEGEXP][items a]"|_" [sup_special d] "_|" [expanstuff s][ENDEXP] = <expan>[items a]<supplied evidence="parallel" reason="undefined">[sup_special d]</>[expanstuff s]</>
+  >: [BEGEXP][WORD a]"(" [WORDS4EX b] ")" [ENDEXP] = <expan>[WORD a]<ex>[WORDS4EX b]</></>
+  >: [BEGEXP][WORD a]"(" [WORDS4EX b] ")"[expanstuff s] [ENDEXP] = <expan>[WORD a]<ex>[WORDS4EX b]</>[expanstuff s]</>
+  >: [BEGEXP][WORD a]"(" [WORDS4EX b] "?" ")" [ENDEXP] = <expan>[WORD a]<ex cert="low">[WORDS4EX b]</></>
+  >: [BEGEXP][WORD a]"(" [WORDS4EX b] "?" ")"[expanstuff s] [ENDEXP] = <expan>[WORD a]<ex cert="low">[WORDS4EX b]</>[expanstuff s]</>
+  >: [BEGEXP][WORD a]"[" [supexpan d] "]" [ENDEXP] = <expan>[WORD a]<supplied reason="lost">[supexpan d]</></>
+  >: [BEGEXP][WORD a]"[" [supexpan d] "]" [expanstuff s][ENDEXP] = <expan>[WORD a]<supplied reason="lost">[supexpan d]</>[expanstuff s]</>
+  >: [BEGEXP][WORD a]"[" [sup_special d] "(?)" "]" [ENDEXP] = <expan>[WORD a]<supplied reason="lost" cert="low">[sup_special d]</></>
+  >: [BEGEXP][WORD a]"[" [sup_special d] "(?)" "]" [expanstuff s][ENDEXP] = <expan>[WORD a]<supplied reason="lost" cert="low">[sup_special d]</>[expanstuff s]</>
+  >: [BEGEXP]"(" [WORDS4EX b] ")" [ENDEXP] = <expan><ex>[WORDS4EX b]</></>
+  >: [BEGEXP]"(" [WORDS4EX b] ")" [expanstuff s][ENDEXP] = <expan><ex>[WORDS4EX b]</>[expanstuff s]</>
+  >: [BEGEXP]"(" [WORDS4EX b] "?" ")" [ENDEXP] = <expan><ex cert="low">[WORDS4EX b]</></>
+  >: [BEGEXP]"(" [WORDS4EX b] "?" ")" [expanstuff s][ENDEXP] = <expan><ex cert="low">[WORDS4EX b]</>[expanstuff s]</>
+  >: [BEGEXP] [expanstuff s][ENDEXP] = <expan>[expanstuff s]</>
+	
+inside_brackets 
+	
+	//---test_lost_dot_gap---
+	// [.1], [.2(?)], [ca.3], [ca.4(?)] 
+	: [DOT] [NUM n] = <gap reason="lost" quantity=[NUM n] unit="character"></>
+	// does not have [DOT] in front to be different from gap illegible which has the [DOT] up front
+	>: [LEADCA] [NUM n] = <gap reason="lost" quantity=[NUM n] unit="character" precision="low"></>
+	>: [LEADCA] [NUM n] "(?)" = <gap reason="lost" quantity=[NUM n] unit="character" precision="low"><certainty match=".." locus="name"></></>
+	>: [DOT] [NUM n] "(?)" = <gap reason="lost" quantity=[NUM n] unit="character"><certainty match=".." locus="name"></></>
+	
+	//---test_lost_dot_max---
+	// [.1-3], [.1-3(?)] 
+	: [DOT] [NUM v] "-" [NUM w] = <gap reason="lost" atLeast=[NUM v] atMost=[NUM w] unit="character"></>
+	>: [DOT] [NUM v] "-" [NUM w] "(?)" = <gap reason="lost" atLeast=[NUM v] atMost=[NUM w] unit="character"><certainty match=".." locus="name"></></>
+			
+	//---test_lost_gap_unknown---
+	// [.?] - diff from empty tag low cert because "." and no space, [.?(?)]
+	>: ".?" = <gap reason="lost" extent="unknown" unit="character"></>
+	>: ".?(?)" = <gap reason="lost" extent="unknown" unit="character"><certainty match=".." locus="name"></></>
+	
+	//---test_lost_space_unknown
+	// [vac?], [vac?(?)]
+	: [ANYMULT w] "vac.?" = <supplied reason="lost">[ANYMULT w]<space extent="unknown" unit="character"/></>
+	: "vac.?" [ANYMULT w] = <supplied reason="lost"><space extent="unknown" unit="character"/>[ANYMULT w]</>
+	: [spaceitem s] = <supplied reason="lost">[spaceitem s]</>
+	: [ANYMULT w] "vac.?" [ANYMULT w] = <supplied reason="lost">[ANYMULT w]<space extent="unknown" unit="character"/>[ANYMULT w]</>
+	: [ANYMULT w] "vac.?" "(?)" = <supplied reason="lost" cert="low">[ANYMULT w]<space extent="unknown" unit="character"/></>
+	: "vac.?" [ANYMULT w] "(?)" = <supplied reason="lost" cert="low"><space extent="unknown" unit="character"/>[ANYMULT w]</>
+	: [spaceitem s] "(?)" = <supplied reason="lost" cert="low">[spaceitem s]</>
+	: [ANYMULT w] "vac.?" [ANYMULT w] "(?)" = <supplied reason="lost" cert="low">[ANYMULT w]<space extent="unknown" unit="character"/>[ANYMULT w]</>
+	
+	//---test_lost_paragraphos
+	// [----], [----(?)]
+	: [ANYMULT w] "----" = <supplied reason="lost">[ANYMULT w]<milestone rend="paragraphos" unit="undefined"/></>
+	: "----" = <supplied reason="lost"><milestone rend="paragraphos" unit="undefined"/></>
+	: [ANYMULT w] "----" [ANYMULT x] = <supplied reason="lost">[ANYMULT w]<milestone rend="paragraphos" unit="undefined"/>[ANYMULT x]</>
+	>: [ANYMULT w] "----" "(?)" = <supplied reason="lost" cert="low">[ANYMULT w]<milestone rend="paragraphos" unit="undefined"/></>
+	>: "----" "(?)" = <supplied reason="lost" cert="low"><milestone rend="paragraphos" unit="undefined"/></>
+	>: [ANYMULT w] "----" [ANYMULT x] "(?)" = <supplied reason="lost" cert="low">[ANYMULT w]<milestone rend="paragraphos" unit="undefined"/>[ANYMULT x]</>
+	
+	//---test_lost_words---
+	// [abc def] lost words
+	: [WORDSSIC w] = <supplied reason="lost">[WORDSSIC w]</>
+	
+	//---test_lost_uncertain---
+	// [abc def(?)] uncertain lost 
+	>: [WORDSSIC w] "(?)" = <supplied reason="lost" cert="low">[WORDSSIC w]</>
+	>: [items w] "(?)" = <supplied reason="lost" cert="low">[items w]</>
+	
+	//---test_lost--- - placed at the end so all other possibilities of inside brackets are checked before looping through 'items' production
+	// [ ] lost markup
+	>: [items is] = <supplied reason="lost">[items is]</>
+	>: [ANYLETTER w] [items is] = <supplied reason="lost">[ANYLETTER w] [items is]</>
+	// the line above causes horizontal ambiguity if you put WORD or WORDS in it.  ANYLETTER is close to WORDS because it allows spaces but not comma - when added a
+// comma to ANYLETTER it really messed things up so took it back out.  ANYLETTER keeps the horizontal ambiguity out of the grammar it gets is close to WORDS in
+// solving grammar (within 1 on BGU.1 so going to leave that for now.  Not sure why WORD/WORDS causes ambiguity and ANYLETTER doesn't.
+
+  // foreign with foreign words
+  // "~veni [vedi] vici~la ", "~veni vedi vici~la " - space at end required 
+foritem
+	>: "~|" [WORDSF a][items c] "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[WORDSF a][items c]</>
+	>: "~|" [WORDSF a] "|~" [WORD b] " " = <foreign xml:lang=[WORD b]>[WORDSF a]</>
+
+	// test_space
+  // vac.?, "vac.?(?) ", vac.3, "vac.3(?) ", vac.2-5, "vac.2-5(?) ", vac.ca.3, "vac.ca.3(?) ", vac.?lin, "vac.?lin(?) ", 
+  // vac.3lin, "vac.3lin(?) ", vac.2-5lin, "vac.2-5lin(?) ", vac.ca.3lin, "vac.ca.3lin(?) "  
+spaceitem 
+	: "vac.?" = <space extent="unknown" unit="character"></>
+	: "vac.?(?) " = <space extent="unknown" unit="character"><certainty match=".." locus="name"></></>
+	: "vac." [NUM n] = <space quantity=[NUM n] unit="character"></>
+	: "vac." [NUM n] "(?) " = <space quantity=[NUM n] unit="character"><certainty match=".." locus="name"></></>
+	: "vac." [NUM v] "-" [NUM w] = <space atLeast=[NUM v] atMost=[NUM w] unit="character"></>
+	: "vac." [NUM v] "-" [NUM w] "(?) " = <space atLeast=[NUM v] atMost=[NUM w] unit="character"><certainty match=".." locus="name"></></>
+	: "vac.ca." [NUM n] = <space quantity=[NUM n] unit="character" precision="low"></>
+	: "vac.ca." [NUM n] "(?) " = <space quantity=[NUM n] unit="character" precision="low"><certainty match=".." locus="name"></></>
+	: "vac.?lin" = <space extent="unknown" unit="line"></>
+	: "vac.?lin(?) " = <space extent="unknown" unit="line"><certainty match=".." locus="name"></></>
+	: "vac." [NUM n] "lin" = <space quantity=[NUM n] unit="line"></>
+	: "vac." [NUM n] "lin(?) " = <space quantity=[NUM n] unit="line"><certainty match=".." locus="name"></></>
+	: "vac." [NUM v] "-" [NUM w] "lin" = <space atLeast=[NUM v] atMost=[NUM w] unit="line"></>
+	: "vac." [NUM v] "-" [NUM w] "lin(?) " = <space atLeast=[NUM v] atMost=[NUM w] unit="line"><certainty match=".." locus="name"></></>
+	: "vac.ca." [NUM n] "lin" = <space quantity=[NUM n] unit="line" precision="low"></>
+	: "vac.ca." [NUM n] "lin(?) " = <space quantity=[NUM n] unit="line" precision="low"><certainty match=".." locus="name"></></>
+
